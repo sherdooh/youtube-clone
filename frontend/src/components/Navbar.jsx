@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import SearchIcon from "@mui/icons-material/Search";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
@@ -12,20 +11,20 @@ const Container = styled.div`
   top: 0;
   height: 56px;
   background-color: ${({ theme }) => theme.bgLighter};
+  z-index: 1000;
 `;
+
 const Wrapper = styled.div`
   height: 100%;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  padding: 0px 40px;
+  justify-content: space-between;
+  padding: 0px 20px;
   position: relative;
 `;
+
 const Search = styled.div`
   width: 50%;
-  left: 0px;
-  right: 0px;
-  margin: auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -33,16 +32,23 @@ const Search = styled.div`
   border-radius: 3px;
   color: ${({ theme }) => theme.text};
   background-color: ${({ theme }) => theme.soft2};
+  padding: 5px;
+  &:focus-within {
+    box-shadow: 0px 0px 5px ${({ theme }) => theme.primary};
+  }
 `;
+
 const Input = styled.input`
   width: 100%;
   border: none;
   font-size: 16px;
   padding: 10px;
-  border-radius: 3px;
   background-color: ${({ theme }) => theme.bgDark};
   outline: none;
   color: ${({ theme }) => theme.text};
+  &::placeholder {
+    color: ${({ theme }) => theme.softText};
+  }
 `;
 
 const Button = styled.button`
@@ -56,12 +62,18 @@ const Button = styled.button`
   display: flex;
   align-items: center;
   gap: 5px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #3ea6ff;
+    color: white;
+  }
 `;
 
 const User = styled.div`
   display: flex;
   align-items: center;
-  gap: 30px;
+  gap: 20px;
   font-weight: 500;
   font-size: 18px;
   color: ${({ theme }) => theme.text};
@@ -72,27 +84,29 @@ const Avatar = styled.img`
   height: 32px;
   border-radius: 50%;
   background-color: #999;
+  object-fit: cover;
 `;
 
 const Navbar = () => {
   const { currentUser } = useSelector((state) => state.user);
+
   return (
     <Container>
       <Wrapper>
         <Search>
           <Input placeholder="Search" />
-          <SearchIcon style={{ marginRight: "12px", marginLeft: "12px" }} />
+          <SearchOutlinedIcon style={{ marginRight: "12px", marginLeft: "12px", cursor: 'pointer' }} />
         </Search>
 
         {currentUser ? (
           <User>
-            <VideoCallOutlinedIcon  />
-            <Avatar src={currentUser.img} />
+            <VideoCallOutlinedIcon style={{ cursor: "pointer" }} />
+            <Avatar src={currentUser.img || "/default-avatar.png"} alt="avatar" />
           </User>
         ) : (
           <Link to="/signin" style={{ textDecoration: "none" }}>
             <Button>
-              <AccountCircleOutlinedIcon /> Sign Up
+              <AccountCircleOutlinedIcon /> Sign In
             </Button>
           </Link>
         )}
