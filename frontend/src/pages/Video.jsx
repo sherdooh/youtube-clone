@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
 import ThumbDownOffAltOutlinedIcon from "@mui/icons-material/ThumbDownOffAltOutlined";
@@ -9,7 +9,12 @@ import Comments from "../components/Comments";
 
 const Container = styled.div`
   display: flex;
+  flex-direction: column;
   gap: 24px;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
 `;
 
 const Content = styled.div`
@@ -17,7 +22,18 @@ const Content = styled.div`
   padding: 4px;
 `;
 
-const VideoWrapper = styled.div``;
+const VideoWrapper = styled.div`
+  position: relative;
+  padding-top: 56.25%; /* 16:9 Aspect Ratio */
+  iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+`;
 
 const Title = styled.h1`
   font-size: 20px;
@@ -32,16 +48,19 @@ const Details = styled.div`
   align-items: center;
   justify-content: space-between;
 `;
+
 const Info = styled.span`
   font-size: 14px;
   color: ${({ theme }) => theme.textSoft};
 `;
+
 const Buttons = styled.div`
   display: flex;
   font-size: 14px;
   gap: 20px;
   color: ${({ theme }) => theme.text};
 `;
+
 const Button = styled.div`
   display: flex;
   align-items: center;
@@ -54,14 +73,22 @@ const Hr = styled.hr`
   border: 0.5px solid ${({ theme }) => theme.soft};
 `;
 
-
 const Recommendation = styled.div`
   flex: 2.5;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+
+  @media (max-width: 768px) {
+    justify-content: flex-start;
+  }
 `;
 
 const Channel = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
 `;
 
 const ChannelInfo = styled.div`
@@ -106,21 +133,29 @@ const Subscribe = styled.button`
   height: max-content;
   padding: 10px 20px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #e62310;
+  }
 `;
 
 const Video = () => {
+  const [loading, setLoading] = useState(true);
+
   return (
     <Container>
       <Content>
         <VideoWrapper>
+          {loading && <div>Loading video...</div>}
           <iframe
             width="100%"
             height="460px"
             src="https://www.youtube.com/embed/yIaXoop8gl4"
             title="YouTube video player"
-            frameborder="0"
+            onLoad={() => setLoading(false)}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
+            allowFullScreen
           ></iframe>
         </VideoWrapper>
         <Title>Video Title</Title>
@@ -149,32 +184,20 @@ const Video = () => {
               <ChannelName>Lama Dev</ChannelName>
               <ChannelCounter>200K subscribers</ChannelCounter>
               <Description>
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                Doloribus laborum delectus unde quaerat dolore culpa sit aliquam
-                at. Vitae facere ipsum totam ratione exercitationem. Suscipit
-                animi accusantium dolores ipsam ut.
+                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Doloribus laborum delectus unde quaerat dolore culpa sit aliquam
+                at. Vitae facere ipsum totam ratione exercitationem. Suscipit animi accusantium dolores ipsam ut.
               </Description>
             </ChannelDetail>
           </ChannelInfo>
           <Subscribe>SUBSCRIBE</Subscribe>
         </Channel>
         <Hr />
-        <Comments/>
+        <Comments />
       </Content>
       <Recommendation>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
+        {Array(12).fill().map((_, i) => (
+          <Card key={i} type="sm" />
+        ))}
       </Recommendation>
     </Container>
   );
