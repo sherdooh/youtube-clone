@@ -1,7 +1,7 @@
 import React from "react";
-import { useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
 import SubscriptionsOutlinedIcon from "@mui/icons-material/SubscriptionsOutlined";
@@ -18,7 +18,6 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import SettingsBrightnessOutlinedIcon from "@mui/icons-material/SettingsBrightnessOutlined";
-import { Link } from "react-router-dom";
 
 const Container = styled.div`
   flex: 1.5;
@@ -28,15 +27,38 @@ const Container = styled.div`
   font-size: 14px;
   position: sticky;
   top: 0;
+  overflow-y: hidden;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
+
 const ContainerWrapper = styled.div`
   height: 90%;
-  overflow-y: scroll !important;
+  overflow-y: auto;
   margin-top: 16px;
+  scrollbar-width: thin;
+  scrollbar-color: ${({ theme }) => theme.soft} transparent;
+  
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background-color: ${({ theme }) => theme.soft};
+    border-radius: 10px;
+  }
 `;
+
 const Space = styled.div`
   height: 50px;
 `;
+
 const Logo = styled.div`
   color: ${({ theme }) => theme.text};
   display: flex;
@@ -47,8 +69,12 @@ const Logo = styled.div`
   padding: 16px 26px 0px 26px;
   font-size: 20px;
 `;
+
 const Image = styled.img`
   height: 25px;
+  &:error {
+    content: url("/fallback-logo.png");
+  }
 `;
 
 const Item = styled.div`
@@ -57,6 +83,8 @@ const Item = styled.div`
   gap: 20px;
   cursor: pointer;
   padding: 7.5px 26px;
+  transition: background-color 0.3s ease;
+
   &:hover {
     background-color: ${({ theme }) => theme.soft};
   }
@@ -70,6 +98,7 @@ const Hr = styled.hr`
 const Login = styled.div`
   padding: 0px 26px;
 `;
+
 const Button = styled.button`
   padding: 5px 15px;
   background-color: transparent;
@@ -82,6 +111,11 @@ const Button = styled.button`
   display: flex;
   align-items: center;
   gap: 5px;
+
+  &:hover {
+    background-color: #3ea6ff;
+    color: white;
+  }
 `;
 
 const Title = styled.h2`
@@ -94,14 +128,16 @@ const Title = styled.h2`
 
 const Menu = ({ darkMode, setDarkMode }) => {
   const { currentUser } = useSelector((state) => state.user);
+  
   return (
     <Container>
       <Link to="/" style={{ textDecoration: "none" }}>
         <Logo>
-          <Image src="https://raw.githubusercontent.com/safak/youtube2022/react-video-ui/src/img/logo.png" />
+          <Image src="https://raw.githubusercontent.com/safak/youtube2022/react-video-ui/src/img/logo.png" alt="YouTube" />
           YouTube
         </Logo>
       </Link>
+
       <ContainerWrapper>
         <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
           <Item>
@@ -109,22 +145,20 @@ const Menu = ({ darkMode, setDarkMode }) => {
             Home
           </Item>
         </Link>
-        <Link to="trends" style={{ textDecoration: "none", color: "inherit" }}>
+        <Link to="/trends" style={{ textDecoration: "none", color: "inherit" }}>
           <Item>
             <ExploreOutlinedIcon />
             Explore
           </Item>
         </Link>
-        <Link
-          to="subscriptions"
-          style={{ textDecoration: "none", color: "inherit" }}
-        >
+        <Link to="/subscriptions" style={{ textDecoration: "none", color: "inherit" }}>
           <Item>
             <SubscriptionsOutlinedIcon />
             Subscriptions
           </Item>
         </Link>
         <Hr />
+
         <Item>
           <VideoLibraryOutlinedIcon />
           Library
@@ -134,24 +168,22 @@ const Menu = ({ darkMode, setDarkMode }) => {
           History
         </Item>
         <Hr />
+
         {!currentUser && (
           <>
-          <Login>
-            Sign in to like videos, comment, and subscribe.
-            <Link
-              to="/signin"
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <Button>
-                {" "}
-                <AccountCircleOutlinedIcon />
-                SIGN IN
-              </Button>
-            </Link>
-          </Login>
-        <Hr />
-        </>
+            <Login>
+              Sign in to like videos, comment, and subscribe.
+              <Link to="/signin" style={{ textDecoration: "none", color: "inherit" }}>
+                <Button>
+                  <AccountCircleOutlinedIcon />
+                  SIGN IN
+                </Button>
+              </Link>
+            </Login>
+            <Hr />
+          </>
         )}
+
         <Title>BEST OF YOUTUBE</Title>
         <Item>
           <LibraryMusicOutlinedIcon />
@@ -178,6 +210,7 @@ const Menu = ({ darkMode, setDarkMode }) => {
           Live
         </Item>
         <Hr />
+
         <Item>
           <SettingsOutlinedIcon />
           Settings
