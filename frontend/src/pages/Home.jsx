@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import styled from 'styled-components'
-import Card from '../components/Cards'
+import styled from 'styled-components';
+import Card from '../components/Cards';
 import axios from "axios";
 
 const Container = styled.div`
@@ -9,25 +9,33 @@ const Container = styled.div`
     flex-wrap: wrap;
 `;
 
-const Home = ({type}) => {
+const Home = ({ type }) => {
+  const [videos, setVideos] = useState([]);
 
-  const [videos, setVideos] = React.useState([]);
-  useEffect(()=>{
+  useEffect(() => {
     const fetchVideos = async () => {
-      const res = await axios.get(`/video/${type}`);
-      setVideos(res.data)
-      console.log(res.data)
-    }
-    fetchVideos()
-  },[type]);
+      try {
+        const res = await axios.get(`/video/${type}`);
+        console.log(res.data); 
+        setVideos(Array.isArray(res.data) ? res.data : []);
+      } catch (error) {
+        console.error("Failed to fetch videos:", error);
+      }
+    };
+    fetchVideos();
+  }, [type]);
 
   return (
     <Container>
-      {videos.map((video) => (
-        <Card key={video._id} video={video}/>
-      ))}
+      {Array.isArray(videos) && videos.length > 0 ? (
+        videos.map((video) => (
+          <Card key={video._id} video={video} />
+        ))
+      ) : (
+        <p>No videos available</p>
+      )}
     </Container>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
